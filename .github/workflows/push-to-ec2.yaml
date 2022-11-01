@@ -3,9 +3,9 @@ name: Auto-Deploy-hellow
 # Trigger deployment on only main branch or only with specific tags.
 on: 
   push:
-    #branches: [ push-to-ec2 ]
-    tags: 
-      - deploy-v1.*
+    branches: [ push-to-ec2 ]
+#    tags: 
+#      - deploy-v1.*
       
 jobs: 
   deploy: 
