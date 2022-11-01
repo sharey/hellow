@@ -5,7 +5,7 @@ on:
   push:
     #branches: [ push-to-ec2 ]
     tags: 
-      - deploy-v1.*
+      - deploy-v*
       
 jobs: 
   deploy: 
