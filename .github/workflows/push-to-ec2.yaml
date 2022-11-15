@@ -3,7 +3,7 @@ name: Auto-Deploy-hellow
 # Trigger dev deployment on only from master branch or only with specific tags.
 on: 
   push:
-    branches: [ master ]
+    #branches: [ master ]
     tags: 
       - deploy-v*
       
