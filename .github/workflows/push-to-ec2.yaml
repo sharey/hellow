@@ -2,10 +2,29 @@ name: Auto-Deploy-hellow
 
 # Trigger dev deployment on only from master branch or only with specific tags.
 on: 
-  push:
-    branches: [ master ]
-    tags: 
-      - deploy-v*
+    workflow_dispatch:
+        inputs:
+          logLevel:
+            description: 'Log level'
+            required: true
+            default: 'warning'
+            type: choice
+            options:
+            - info
+            - warning
+            - debug
+          tags:
+            description: 'Test scenario tags'
+            required: false
+            type: boolean
+          environment:
+            description: 'Environment to run tests against'
+            type: environment
+            required: true
+#  push:
+#    branches: [ master ]
+#    tags: 
+#      - deploy-v*
       
 jobs: 
   deploy: 
