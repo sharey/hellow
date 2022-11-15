@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     steps:
-      - name: Install node.js...No Server Deployment needed, only workflow related changes. Testing 2 separate workflows
-        uses: actions/setup-node@v3
-        with:
-            node-version: 16
+      - name: Testing 2 separate workflows
+        run: |
+            echo "No Server Deployment needed, only workflow related changes. "
         

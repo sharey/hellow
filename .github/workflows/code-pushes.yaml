@@ -4,7 +4,7 @@ name: Deploy-Code-Changes
 on: 
   push:
     paths:
-        - '/**'
+        - 'src/**'
         - '!.github/**'
       
 jobs: 
