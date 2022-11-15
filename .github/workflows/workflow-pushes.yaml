@@ -11,5 +11,5 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     steps:
-      - name: No Deployment, only workflow related changes. Testing 2 separate workflows
+      - name: No Server Deployment needed, only workflow related changes. Testing 2 separate workflows
         
