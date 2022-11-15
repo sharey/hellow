@@ -1,11 +1,11 @@
-name: Auto-Deploy-hellow
+name: Deploy-Code-Changes
 
 # Trigger dev deployment on only from master branch or only with specific tags.
 on: 
   push:
-    #branches: [ master ]
-    tags: 
-      - deploy-v*
+    paths:
+        - '/**'
+        - '!.github/**'
       
 jobs: 
   deploy: 
