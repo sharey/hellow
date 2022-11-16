@@ -52,7 +52,7 @@ jobs:
       - name: Deploy to Server 1
         uses: easingthemes/ssh-deploy@main
         env: 
-          SSH_PRIVATE_KEY: ${{ secrets.DEV_EC2_SSH_KEY1 }}
+          SSH_PRIVATE_KEY: ${{ secrets.DEV_EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.DEV_EC2_USER }}
           ARGS: "-rltgoDzvO --delete"
