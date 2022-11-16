@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     steps:
-      - name: Testing 2 separate workflows
+      - name: Workflow related pushes
         run: |
             echo "No Server Deployment needed, only workflow related changes. "
         
