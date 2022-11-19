@@ -1,0 +1,69 @@
+name: Auto-Deploy-hellow
+
+# Trigger dev deployment on only from master branch or only with specific tags.
+on: 
+  push:
+    #branches: [ master ]
+    tags: 
+      - deploy-v*
+      
+jobs: 
+  deploy: 
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Install node.js
+        uses: actions/setup-node@v3
+        with:
+            node-version: 16
+            
+      - name: Get GitHub Actions IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+    
+      - name: Set Environment Variables
+        run: |
+            echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
+            echo "AWS_SG_NAME=GitHubActionsSecGrp" >> $GITHUB_ENV
+    
+      - name: Add GitHub Actions IP to Security Group
+        run: |
+            aws ec2 authorize-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
+        env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+            AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+        
+      - name: Checkout the files on GitHub
+        uses: actions/checkout@v3
+    
+      
+      - name: Take Backup of existing code
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_REMOTE_HOST }}
+          username: ${{ secrets.DEV_EC2_USER }}
+          key: ${{ secrets.DEV_EC2_SSH_KEY }}          
+          script: |
+            mkdir /var/www/backups/$(date +'%Y-%m-%dT%H:%M:%S')
+            cp -R ${{ secrets.DEV_TARGET_DIR }}/* /var/www/backups/$(date +'%Y-%m-%dT%H:%M:%S')
+#            rsync -avz src/ --delete ${{ secrets.DEV_EC2_USER }}@${{ secrets.DEV_REMOTE_HOST }}:${{ secrets.DEV_TARGET_DIR }}
+      
+      - name: Deploy to Server 1
+        uses: easingthemes/ssh-deploy@main
+        env: 
+          SSH_PRIVATE_KEY: ${{ secrets.DEV_EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.DEV_EC2_USER }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "src/"
+          TARGET: ${{ secrets.DEV_TARGET_DIR }}
+          EXCLUDE: "/dist/, /node_modules/"
+          
+      - name: Remove GitHub IP from Security Group
+        run: |
+            aws ec2 revoke-security-group-ingress --group-name ${{ env.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+            AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
