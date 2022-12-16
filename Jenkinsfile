@@ -8,7 +8,7 @@ pipeline{
 
             steps{
 
-                echo "This is a stage where we clone the GH Repo."
+                echo "This is a stage where we clone the GH Repo"
             }
         }
 
